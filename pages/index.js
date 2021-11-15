@@ -4,12 +4,10 @@ import Navbar from '../components/nav/Navbar';
 import Banner from '../components/banner/Banner';
 import SectionCards from '../components/card/SectionCards';
 
-import magic from '../lib/magic-client';
 import { getVideos, getPopularVideos } from '../lib/videos';
 
 import styles from '../styles/Home.module.css';
 
-console.log(magic);
 export async function getServerSideProps() {
   const disneyVideos = await getVideos('disney%20trailer');
   const travelVideos = await getVideos('travel');
@@ -46,6 +44,7 @@ export default function Home({
           title='Along Came A Spider'
           subTitle='I name it'
           imgUrl='/static/demoImg.jpg'
+          videoId='4zH5iYM4wJo'
         />
         <div className={styles.sectionWrapper}>
           <SectionCards title='Disney' videos={disneyVideos} size='large' />

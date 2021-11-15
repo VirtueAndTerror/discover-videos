@@ -1,13 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import Link from 'next/link';
+
+import magic from '../../lib/magic-client';
 
 import styles from './Navbar.module.css';
 
-const Navbar = ({ username }) => {
+const Navbar = () => {
   const [toggleHidden, setToggleHidden] = useState(false);
+  const [username, setUsername] = useState('');
   const router = useRouter();
+
+  useEffect(() => {
+    try {
+      async function fetchData() {
+        const { email } = await magic.user.getMetadata();
+
+        if (email) return setUsername(email);
+      }
+
+      fetchData();
+    } catch (ex) {
+      console.error(ex);
+    }
+  }, []);
 
   const handleHome = e => {
     e.preventDefault();
@@ -15,10 +31,19 @@ const Navbar = ({ username }) => {
   };
   const handleMyList = e => {
     e.preventDefault();
-    router.push('browse/my-list');
+    router.push('/browse/my-list');
   };
 
-  const handleSignOut = () => {};
+  const handleSignOut = async e => {
+    e.preventDefault();
+    try {
+      await magic.user.logout();
+      console.log('Successfuly logged out!');
+      router.push('/login');
+    } catch (ex) {
+      console.error('Error signing out', ex);
+    }
+  };
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
@@ -48,11 +73,10 @@ const Navbar = ({ username }) => {
             {toggleHidden ? (
               <div className={styles.navDropdown}>
                 <div>
-                  <Link href='/login'>
-                    <a className={styles.linkName} onClick={handleSignOut}>
-                      Sign out
-                    </a>
-                  </Link>
+                  <a className={styles.linkName} onClick={handleSignOut}>
+                    Sign out
+                  </a>
+
                   <div className={styles.lineWrapper}></div>
                 </div>
               </div>
