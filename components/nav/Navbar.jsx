@@ -12,20 +12,19 @@ const Navbar = () => {
   const router = useRouter();
 
   useEffect(() => {
-    try {
-      async function fetchData() {
+    async function fetchData() {
+      try {
         const { email } = await magic.user.getMetadata();
-
         const didToken = await magic.user.getIdToken();
         console.log({ didToken });
 
         if (email) return setUsername(email);
+      } catch (ex) {
+        console.error(ex);
       }
-
-      fetchData();
-    } catch (ex) {
-      console.error(ex);
     }
+
+    fetchData();
   }, []);
 
   const handleHome = e => {

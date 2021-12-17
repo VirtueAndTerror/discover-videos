@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Modal from 'react-modal';
 import cls from 'classnames';
 
 import Navbar from '../../components/nav/Navbar';
+import Like from '../../components/icons/like-icon';
+import Dislike from '../../components/icons/dislike-icons';
+
 import { getYoutubeVideoById } from '../../lib/videos';
 
 import styles from '../../styles/Video.module.css';
@@ -34,6 +38,9 @@ export async function getStaticPaths() {
 
 const Video = ({ video }) => {
   const router = useRouter();
+  const [toggleLike, setToggleLike] = useState(false);
+  const [toggleDislike, setToggleDislike] = useState(false);
+
   const { videoId } = router.query;
   const BASE_URL = 'https://www.youtube.com/embed/';
   const otherParams = '?autoplay=1&controls=0&rel=0&origin=http://example.com';
@@ -45,6 +52,18 @@ const Video = ({ video }) => {
     channelTitle,
     statistics: { viewCount } = { viewCount: 0 },
   } = video;
+
+  const handleToggleDislike = () => {
+    console.log('Dislike');
+    setToggleDislike(!toggleDislike);
+    setToggleLike(toggleDislike);
+  };
+
+  const handleToggleLike = () => {
+    console.log('Like');
+    setToggleLike(!toggleLike);
+    setToggleDislike(toggleLike);
+  };
 
   return (
     <div className={styles.container}>
@@ -65,6 +84,21 @@ const Video = ({ video }) => {
           src={src}
           frameborder='0'
         ></iframe>
+
+        <div className={styles.likeDislikeBtnWrapper}>
+          <div className={styles.likeBtnWrapper}>
+            <button onClick={handleToggleLike}>
+              <div className={styles.btnWrapper}>
+                <Like selected={toggleLike} />
+              </div>
+            </button>
+          </div>
+          <button onClick={handleToggleDislike}>
+            <div className={styles.btnWrapper}>
+              <Dislike selected={toggleDislike} />
+            </div>
+          </button>
+        </div>
 
         <div className={styles.modalBody}>
           <div className={styles.modalBodyContent}>
