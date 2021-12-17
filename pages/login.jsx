@@ -33,18 +33,27 @@ export default function Login() {
 
   const handleLogin = async e => {
     e.preventDefault();
-    if (email !== 'arnaldo.e.diaz@gmail.com')
-      return setUserMsg('Enter a valid email address');
+    if (!email) return setUserMsg('Enter a valid email address');
     // log in a user by their email
     try {
       setIsLoading(true);
+
       const didToken = await magic.auth.loginWithMagicLink({
         email,
-        // showUI: false,
       });
 
       if (didToken) {
-        return router.push('/');
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${didToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const loggedInResponse = await response.json();
+        if (loggedInResponse.done) {
+          return router.push('/');
+        }
       }
     } catch (ex) {
       console.log('Something went wrong with MagicLink', ex);
