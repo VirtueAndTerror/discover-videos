@@ -54,15 +54,13 @@ const Video = ({ video }) => {
   } = video;
 
   const handleToggleDislike = () => {
-    console.log('Dislike');
     setToggleDislike(!toggleDislike);
-    setToggleLike(toggleDislike);
+    if (toggleLike) setToggleLike(toggleDislike);
   };
 
   const handleToggleLike = () => {
-    console.log('Like');
     setToggleLike(!toggleLike);
-    setToggleDislike(toggleLike);
+    if (toggleDislike) setToggleDislike(toggleLike);
   };
 
   return (

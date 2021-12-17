@@ -56,7 +56,7 @@ export default function Login() {
         }
       }
     } catch (ex) {
-      console.log('Something went wrong with MagicLink', ex);
+      console.error('Something went wrong with MagicLink', ex);
     }
   };
 
