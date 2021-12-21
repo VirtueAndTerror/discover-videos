@@ -1,8 +1,18 @@
 import Link from 'next/link';
+import React from 'react';
 import Card from './Card';
 import styles from './SectionCards.module.css';
 
-const SectionCards = ({ title, videos = [], size }) => {
+type SCardsProps = {
+  title: string;
+  videos: {
+    id: number;
+    imgUrl: string;
+  }[];
+  size: string;
+};
+
+const SectionCards: React.FC<SCardsProps> = ({ title, videos = [], size }) => {
   return (
     <section className={styles.container}>
       <h2 className={styles.title}>{title}</h2>

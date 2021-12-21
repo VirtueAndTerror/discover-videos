@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Modal from 'react-modal';
 import cls from 'classnames';
@@ -36,7 +36,7 @@ export async function getStaticPaths() {
   return { paths, fallback: 'blocking' };
 }
 
-const Video = ({ video }) => {
+const Video: React.FC<any> = ({ video }) => {
   const router = useRouter();
   const [toggleLike, setToggleLike] = useState(false);
   const [toggleDislike, setToggleDislike] = useState(false);

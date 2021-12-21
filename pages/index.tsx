@@ -39,7 +39,7 @@ export default function Home({
       </Head>
 
       <main className={styles.main}>
-        <Navbar username='arnaldo.e.diaz@gmail.com' />
+        <Navbar />
         <Banner
           title='Along Came A Spider'
           subTitle='I name it'

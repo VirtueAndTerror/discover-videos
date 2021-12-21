@@ -1,22 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useState, useEffect, FormEvent } from 'react';
+import { NextRouter, useRouter } from 'next/router';
 import Image from 'next/image';
 
 import magic from '../../lib/magic-client';
 
 import styles from './Navbar.module.css';
 
-const Navbar = () => {
-  const [toggleHidden, setToggleHidden] = useState(false);
-  const [username, setUsername] = useState('');
-  const router = useRouter();
+const Navbar = (): JSX.Element => {
+  const [toggleHidden, setToggleHidden] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>('');
+  const router: NextRouter = useRouter();
 
-  useEffect(() => {
-    async function fetchData() {
+  useEffect((): void => {
+    async function fetchData(): Promise<void> {
       try {
         const { email } = await magic.user.getMetadata();
-        const didToken = await magic.user.getIdToken();
-        console.log({ didToken });
 
         if (email) return setUsername(email);
       } catch (ex) {
@@ -27,16 +25,16 @@ const Navbar = () => {
     fetchData();
   }, []);
 
-  const handleHome = e => {
+  const handleHome = (e: FormEvent): void => {
     e.preventDefault();
     router.push('/');
   };
-  const handleMyList = e => {
+  const handleMyList = (e: FormEvent): void => {
     e.preventDefault();
     router.push('/browse/my-list');
   };
 
-  const handleSignOut = async e => {
+  const handleSignOut = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     try {
       await magic.user.logout();

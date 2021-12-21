@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import cls from 'classnames';
 
+import cls from 'classnames';
 import { motion } from 'framer-motion';
 
 import styles from './Card.module.css';
 
-const Card = ({ id, imgUrl, size = 'medium' }) => {
-  const [imgSrc, setImgSrc] = useState(imgUrl);
+type CardProps = {
+  id: number;
+  imgUrl: string;
+  size: string;
+};
+
+const Card: React.FC<CardProps> = ({ id, imgUrl, size = 'medium' }) => {
+  const [imgSrc, setImgSrc] = useState<string>(imgUrl);
 
   const classMap = {
     large: styles.lgItem,
@@ -15,7 +21,7 @@ const Card = ({ id, imgUrl, size = 'medium' }) => {
     small: styles.smItem,
   };
 
-  const handleError = () => {
+  const handleError = (): void => {
     console.error('Hello Error!');
     setImgSrc(
       'https://images.unsplash.com/photo-1585951237318-9ea5e175b891?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'

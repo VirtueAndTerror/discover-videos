@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState, useEffect, MouseEvent, ChangeEvent } from 'react';
+import { NextRouter, useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
 
@@ -8,33 +8,33 @@ import magic from '../lib/magic-client';
 import styles from '../styles/Login.module.css';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [userMsg, setUserMsg] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [userMsg, setUserMsg] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const router = useRouter();
+  const router: NextRouter = useRouter();
 
-  useEffect(() => {
+  useEffect((): VoidFunction => {
     const handleComplete = () => setIsLoading(false);
 
     router.events.on('routeChangeComplete', handleComplete);
     router.events.on('routeChangeError', handleComplete);
-    return () => {
+    return (): void => {
       router.events.off('routeChangeComplete', handleComplete);
-      router.events.on('routeChangeError', handleComplete);
+      router.events.off('routeChangeError', handleComplete);
     };
   }, [router]);
 
-  const handleOnChange = e => {
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserMsg('');
     const { value } = e.target;
     setEmail(value);
   };
 
-  const handleLogin = async e => {
+  const handleLogin = async (e: MouseEvent): Promise<boolean | void> => {
     e.preventDefault();
     if (!email) return setUserMsg('Enter a valid email address');
-    // log in a user by their email
+
     try {
       setIsLoading(true);
 
