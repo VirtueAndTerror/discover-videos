@@ -60,7 +60,6 @@ const Video: React.FC<any> = ({ video }) => {
     async function fetchStats() {
       const res = await fetch(`/api/stats?videoId=${videoId}`);
       const data = await res.json();
-      console.log({ data });
       if (data.length > 0) {
         const favorited = data[0].favorited;
         switch (favorited) {

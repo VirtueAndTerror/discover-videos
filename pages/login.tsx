@@ -52,7 +52,6 @@ export default function Login() {
         });
         const { authenticated } = await response.json();
         if (authenticated) {
-          console.log({ authenticated });
           router.push('/');
         } else {
           setIsLoading(false);

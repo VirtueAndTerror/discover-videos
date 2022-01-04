@@ -9,7 +9,7 @@ const useRedirectUser = async (ctx) => {
       token,
     };
   } catch (ex) {
-    console.log(ex.message, ex);
+    console.error(ex.message, ex);
   }
 };
 

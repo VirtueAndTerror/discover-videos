@@ -29,8 +29,6 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
       process.env.JWT_SECRET
     );
 
-    console.log({ jwtToken });
-
     const isNewUserQuery = await isNewUser(jwtToken, metadata.issuer);
     // If it is a new User, then create now user in DB.
     isNewUserQuery && (await createNewUser(jwtToken, metadata));

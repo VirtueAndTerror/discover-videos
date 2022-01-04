@@ -16,7 +16,6 @@ export async function middleware(req: NextRequest) {
   }
 
   if (!token && pathname !== '/login') {
-    console.log('Redirected by _middleware.tsx');
     return NextResponse.redirect('/login');
   }
 }

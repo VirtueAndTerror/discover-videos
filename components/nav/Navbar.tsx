@@ -21,7 +21,6 @@ const Navbar = (): JSX.Element => {
         if (email) {
           setUsername(email);
           setDidToken(didToken);
-          console.log({ didToken });
         }
       } catch (ex) {
         console.error('Error retrieving email - Navbar', ex);
@@ -51,7 +50,6 @@ const Navbar = (): JSX.Element => {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Successfuly logged out!');
       router.replace('/login');
     } catch (ex) {
       console.error('Error signing out', ex);

@@ -18,13 +18,12 @@ export default async function logout(
     try {
       await mAdmin.users.logoutByIssuer(userId);
     } catch (ex) {
-      console.log("User's session with Magic already expired");
       console.error('Error occurred while logging out magic user', ex);
     }
 
     res.redirect(302, '/');
   } catch (ex) {
-    console.log({ ex });
+    console.error({ ex });
     res.status(401).json({ msg: 'user is not logged in' });
   }
 }

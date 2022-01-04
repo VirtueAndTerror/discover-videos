@@ -48,7 +48,6 @@ export default async function stats(req: NextApiRequest, res: NextApiResponse) {
               favorited,
             });
             res.send({ data: response });
-            console.log(response);
           }
           break;
         default:
