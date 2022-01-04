@@ -73,7 +73,7 @@ const Video: React.FC<any> = ({ video }) => {
       }
     }
     fetchStats();
-  }, []);
+  }, [videoId]);
 
   const runRatingService = async (favorited): Promise<Response> => {
     return await fetch('/api/stats', {
