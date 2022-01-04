@@ -7,6 +7,6 @@ function createMagic() {
   return typeof window !== 'undefined' && new Magic(MAGIC_API_KEY);
 }
 
-const magic = createMagic();
+const m = createMagic();
 
-export default magic;
+export default m;

@@ -1,20 +1,21 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { mAdmin } from '../../lib/magic-server';
 import jwt from 'jsonwebtoken';
 import { isNewUser, createNewUser } from '../../lib/db/hasura';
 import { setTokenCookie } from '../../lib/cookies';
 
-export default async function login(req, res) {
+export default async function login(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST')
-    return res
-      .status(405)
-      .send({ done: false, message: '405 Method Not Allowed' });
+    return res.status(405).send({ message: '405 Method Not Allowed' });
 
   try {
+    // Strip token form http requests headers
     const auth = req.headers.authorization;
-    const didToken = auth ? auth.substr(7) : '';
+    const didToken = auth ? auth.substring(7) : '';
+    // Get Metadata form token
     const metadata = await mAdmin.users.getMetadataByToken(didToken);
-
-    const token = jwt.sign(
+    // Create jwt token:
+    const jwtToken = jwt.sign(
       {
         ...metadata,
         iat: Math.floor(Date.now() / 1000),
@@ -28,10 +29,14 @@ export default async function login(req, res) {
       process.env.JWT_SECRET
     );
 
-    const isNewUserQuery = await isNewUser(token, metadata.issuer);
-    isNewUserQuery && (await createNewUser(token, metadata));
-    setTokenCookie(token, res);
-    res.send({ done: true });
+    console.log({ jwtToken });
+
+    const isNewUserQuery = await isNewUser(jwtToken, metadata.issuer);
+    // If it is a new User, then create now user in DB.
+    isNewUserQuery && (await createNewUser(jwtToken, metadata));
+    // Set Cookie in Browser
+    setTokenCookie(jwtToken, res);
+    res.send({ authenticated: true, isNewUserQuery });
   } catch (ex) {
     console.error('Something went wrong logging in', ex);
     res.status(500).send({ done: false });

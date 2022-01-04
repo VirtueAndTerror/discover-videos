@@ -3,7 +3,7 @@ import { NextRouter, useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
 
-import magic from '../lib/magic-client';
+import m from '../lib/magic-client';
 
 import styles from '../styles/Login.module.css';
 
@@ -26,8 +26,8 @@ export default function Login() {
   }, [router]);
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setUserMsg('');
     const { value } = e.target;
+    setUserMsg('');
     setEmail(value);
   };
 
@@ -38,7 +38,7 @@ export default function Login() {
     try {
       setIsLoading(true);
 
-      const didToken = await magic.auth.loginWithMagicLink({
+      const didToken = await m.auth.loginWithMagicLink({
         email,
       });
 
@@ -50,9 +50,13 @@ export default function Login() {
             'Content-Type': 'application/json',
           },
         });
-        const loggedInResponse = await response.json();
-        if (loggedInResponse.done) {
-          return router.push('/');
+        const { authenticated } = await response.json();
+        if (authenticated) {
+          console.log({ authenticated });
+          router.push('/');
+        } else {
+          setIsLoading(false);
+          setUserMsg('Something went wrong loggin in');
         }
       }
     } catch (ex) {

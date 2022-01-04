@@ -10,9 +10,15 @@ type CardProps = {
   id: number;
   imgUrl: string;
   size: string;
+  shouldScale?: boolean;
 };
 
-const Card: React.FC<CardProps> = ({ id, imgUrl, size = 'medium' }) => {
+const Card: React.FC<CardProps> = ({
+  id,
+  imgUrl,
+  size = 'medium',
+  shouldScale = true,
+}) => {
   const [imgSrc, setImgSrc] = useState<string>(imgUrl);
 
   const classMap = {
@@ -29,11 +35,12 @@ const Card: React.FC<CardProps> = ({ id, imgUrl, size = 'medium' }) => {
   };
 
   const scale = id === 0 ? { scaleY: 1.1 } : { scale: 1.1 };
+  const shouldHover = shouldScale && { whileHover: { ...scale } };
   return (
     <div className={styles.container}>
       <motion.div
         className={cls(styles.imgMotionWrapper, classMap[size])}
-        whileHover={{ ...scale }}
+        {...shouldHover}
       >
         <Image
           className={styles.cardImg}

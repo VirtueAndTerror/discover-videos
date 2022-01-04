@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Modal from 'react-modal';
 import cls from 'classnames';
@@ -10,11 +10,14 @@ import Dislike from '../../components/icons/dislike-icons';
 import { getYoutubeVideoById } from '../../lib/videos';
 
 import styles from '../../styles/Video.module.css';
+import { GetStaticProps, GetStaticPropsContext } from 'next';
 
 Modal.setAppElement('#__next');
 
-export async function getStaticProps(ctx) {
-  const videoId = ctx.params.videoId;
+export const getStaticProps: GetStaticProps = async (
+  ctx: GetStaticPropsContext
+) => {
+  const videoId = ctx.params.videoId.toString();
 
   const [video] = await getYoutubeVideoById(videoId);
 
@@ -24,12 +27,12 @@ export async function getStaticProps(ctx) {
     },
     revalidate: 5,
   };
-}
+};
 
 export async function getStaticPaths() {
   const videosList = [];
 
-  const paths = videosList.map(videoId => ({
+  const paths = videosList.map((videoId) => ({
     params: { videoId },
   }));
 
@@ -53,14 +56,54 @@ const Video: React.FC<any> = ({ video }) => {
     statistics: { viewCount } = { viewCount: 0 },
   } = video;
 
-  const handleToggleDislike = () => {
-    setToggleDislike(!toggleDislike);
-    if (toggleLike) setToggleLike(toggleDislike);
+  useEffect((): void => {
+    async function fetchStats() {
+      const res = await fetch(`/api/stats?videoId=${videoId}`);
+      const data = await res.json();
+      console.log({ data });
+      if (data.length > 0) {
+        const favorited = data[0].favorited;
+        switch (favorited) {
+          case 1:
+            setToggleLike(true);
+            break;
+          case 2:
+            setToggleDislike(true);
+            break;
+        }
+      }
+    }
+    fetchStats();
+  }, []);
+
+  const runRatingService = async (favorited): Promise<Response> => {
+    return await fetch('/api/stats', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        videoId,
+        favorited,
+      }),
+    });
   };
 
-  const handleToggleLike = () => {
-    setToggleLike(!toggleLike);
+  const handleToggleDislike = async (): Promise<void> => {
+    const value = !toggleDislike;
+    setToggleDislike(value);
+    if (toggleLike) setToggleLike(toggleDislike);
+
+    const favorited = value ? 2 : 0;
+    await runRatingService(favorited);
+  };
+
+  const handleToggleLike = async (): Promise<void> => {
+    const value = !toggleLike;
+    setToggleLike(value);
     if (toggleDislike) setToggleDislike(toggleLike);
+    const favorited = value ? 1 : 0;
+    await runRatingService(favorited);
   };
 
   return (
@@ -76,11 +119,11 @@ const Video: React.FC<any> = ({ video }) => {
         <iframe
           className={styles.videoPlayer}
           id='ytplayer'
-          type='text/html'
+          // type='text/html'
           width='100%'
           height='360'
           src={src}
-          frameborder='0'
+          frameBorder='0'
         ></iframe>
 
         <div className={styles.likeDislikeBtnWrapper}>

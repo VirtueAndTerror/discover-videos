@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { NextRouter, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import React from 'react';
 import styles from './Banner.module.css';
 
@@ -16,7 +16,7 @@ const Banner: React.FC<BannerProps> = ({
   imgUrl,
   videoId,
 }) => {
-  const router: NextRouter = useRouter();
+  const router = useRouter();
 
   const handlePlay = (): void => {
     router.push(`video/${videoId}`);

@@ -1,6 +1,20 @@
 import videoTestData from '../data/videos.json';
+import { getWatchedVideos, getMyListVideos } from './db/hasura';
 
-const fetchVideos = async url => {
+interface Video extends Watched {
+  title: string;
+  description: string;
+  channelTitle: string;
+  publishTime: string;
+  statistics: { viewCount: number };
+}
+
+interface Watched {
+  id: string;
+  imgUrl: string;
+}
+
+const fetchVideos = async (url: string) => {
   const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
   const BASE_URL = 'youtube.googleapis.com/youtube/v3/';
 
@@ -12,7 +26,7 @@ const fetchVideos = async url => {
   return data;
 };
 
-export const getCommonVideos = async url => {
+export const getCommonVideos = async (url: string): Promise<Video[]> => {
   try {
     const isDev = process.env.DEVELOPMENT;
 
@@ -23,7 +37,7 @@ export const getCommonVideos = async url => {
       return [];
     }
 
-    return data?.items.map(item => {
+    return data?.items.map((item: any) => {
       const id = item.id?.videoId || item.id;
       const {
         title,
@@ -49,19 +63,45 @@ export const getCommonVideos = async url => {
   }
 };
 
-export const getVideos = searchQuery => {
+export const getVideos = (searchQuery: string): Promise<Video[]> => {
   const URL = `search?part=snippet&maxResults=25&q=${searchQuery}`;
   return getCommonVideos(URL);
 };
 
-export const getPopularVideos = () => {
+export const getPopularVideos = (): Promise<Video[]> => {
   const URL = `videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=25&regionCode=US`;
 
   return getCommonVideos(URL);
 };
 
-export const getYoutubeVideoById = videoId => {
+export const getYoutubeVideoById = (videoId: string): Promise<Video[]> => {
   const URL = `videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}`;
 
   return getCommonVideos(URL);
+};
+
+export const getWatchItAgainVideos = async (
+  userId: string,
+  token: string
+): Promise<Watched[]> => {
+  const videos = await getWatchedVideos(userId, token);
+  if (videos) {
+    return videos?.map((video) => ({
+      id: video.videoId,
+      imgUrl: `https://i.ytimg.com/vi/${video.videoId}/maxresdefault.jpg`,
+    }));
+  } else {
+    return null;
+  }
+};
+
+export const getMyList = async (
+  userId: string,
+  token: string
+): Promise<Watched[]> => {
+  const videos = await getMyListVideos(userId, token);
+  return videos?.map((video) => ({
+    id: video.videoId,
+    imgUrl: `https://i.ytimg.com/vi/${video.videoId}/maxresdefault.jpg`,
+  }));
 };
