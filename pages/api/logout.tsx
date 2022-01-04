@@ -21,7 +21,7 @@ export default async function logout(
       console.error('Error occurred while logging out magic user', ex);
     }
 
-    res.redirect(302, '/');
+    res.redirect(302, '/login');
   } catch (ex) {
     console.error({ ex });
     res.status(401).json({ msg: 'user is not logged in' });
