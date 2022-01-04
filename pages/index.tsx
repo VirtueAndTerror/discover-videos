@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import useRedirectUser from '../utils/redirectUser';
+import getCurrentUser from '../utils/getCurrentUser';
 import Navbar from '../components/nav/Navbar';
 import Banner from '../components/banner/Banner';
 import SectionCards from '../components/card/SectionCards';
@@ -17,7 +17,7 @@ import styles from '../styles/Home.module.css';
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
-  const { userId, token } = await useRedirectUser(ctx);
+  const { userId, token } = await getCurrentUser(ctx);
 
   const disneyVideos = await getVideos('disney%20trailer');
   const travelVideos = await getVideos('travel');

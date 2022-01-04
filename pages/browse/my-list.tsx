@@ -5,14 +5,14 @@ import SectionCards from '../../components/card/SectionCards';
 import Navbar from '../../components/nav/Navbar';
 
 import { getMyList } from '../../lib/videos';
-import useRedirectUser from '../../utils/redirectUser';
+import getCurrentUser from '../../utils/getCurrentUser';
 
 import styles from '../../styles/MyList.module.css';
 
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
-  const { userId, token } = await useRedirectUser(ctx);
+  const { userId, token } = await getCurrentUser(ctx);
   const myListVideos = await getMyList(userId, token);
   return {
     props: {
