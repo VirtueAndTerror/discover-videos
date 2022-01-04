@@ -53,7 +53,7 @@ export default function Login() {
         });
         const { authenticated } = await response.json();
         if (authenticated) {
-          router.push('/');
+          router.replace('/');
         } else {
           setIsLoading(false);
           setUserMsg('Something went wrong loggin in');
