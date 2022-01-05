@@ -68,18 +68,14 @@ export default function Login() {
 
       <header className={styles.header}>
         <div className={styles.headerWrapper}>
-          <Link href='/' as='/browse'>
-            <a className={styles.logoLink}>
-              <div className={styles.logoWrapper}>
-                <Image
-                  src='/static/netflix.svg'
-                  alt='Netflix logo'
-                  width='128px'
-                  height='34px'
-                />
-              </div>
-            </a>
-          </Link>
+          <div className={styles.logoWrapper}>
+            <Image
+              src='/static/netflix.svg'
+              alt='Netflix logo'
+              width='128px'
+              height='34px'
+            />
+          </div>
         </div>
       </header>
 

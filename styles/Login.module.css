@@ -26,14 +26,6 @@
   display: flex;
 }
 
-.logoLink {
-  display: flex;
-  font-weight: 500;
-  align-items: center;
-  color: var(--white10);
-  margin-bottom: 1rem /* 16px */;
-}
-
 .logoWrapper {
   color: var(--red);
   width: 8rem /* 128px */;

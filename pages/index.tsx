@@ -1,16 +1,17 @@
 import Head from 'next/head';
-import getCurrentUser from '../utils/getCurrentUser';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+
 import Navbar from '../components/nav/Navbar';
 import Banner from '../components/banner/Banner';
 import SectionCards from '../components/card/SectionCards';
+
+import getCurrentUser from '../utils/getCurrentUser';
 
 import {
   getVideos,
   getPopularVideos,
   getWatchItAgainVideos,
 } from '../lib/videos';
-
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 import styles from '../styles/Home.module.css';
 
