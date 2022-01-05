@@ -23,9 +23,9 @@ export default async function logout(
 
     removeTokenCookie(res);
     // res.redirect(302, '/login');
-    res.end();
+    res.json({ success: true });
   } catch (ex) {
     console.error({ ex });
-    res.status(401).json({ msg: 'user is not logged in' });
+    res.status(401).json({ msg: 'User is not logged in' });
   }
 }

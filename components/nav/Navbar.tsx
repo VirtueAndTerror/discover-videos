@@ -95,12 +95,10 @@ const Navbar = (): JSX.Element => {
             </button>
             {toggleHidden && (
               <div className={styles.navDropdown}>
-                <div>
-                  <a className={styles.linkName} onClick={handleSignOut}>
-                    Sign out
-                  </a>
-                  <div className={styles.lineWrapper}></div>
-                </div>
+                <a className={styles.linkName} onClick={handleSignOut}>
+                  Sign out
+                </a>
+                <div className={styles.lineWrapper}></div>
               </div>
             )}
           </div>
