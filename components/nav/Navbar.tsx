@@ -5,6 +5,8 @@ import Image from 'next/image';
 
 import m from '../../lib/magic-client';
 
+import useFetch from '../../utils/useFetch';
+
 import styles from './Navbar.module.css';
 
 const Navbar = (): JSX.Element => {
@@ -24,7 +26,7 @@ const Navbar = (): JSX.Element => {
           setDidToken(didToken);
         }
       } catch (ex) {
-        console.error('Error retrieving email - Navbar', ex);
+        console.error('Error retrieving email -- Navbar', ex);
       }
     }
 
@@ -33,7 +35,7 @@ const Navbar = (): JSX.Element => {
 
   const handleHome = (e: FormEvent): void => {
     e.preventDefault();
-    router.push('/');
+    router.push('/', '/browse');
   };
   const handleMyList = (e: FormEvent): void => {
     e.preventDefault();
@@ -43,23 +45,20 @@ const Navbar = (): JSX.Element => {
   const handleSignOut = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     try {
+      // Logout from Magic Link
       await m.user.logout();
-      await fetch('/api/logout', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${didToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      router.replace('/login');
+      // Call Server /api/logout
+      await useFetch('/api/logout', didToken);
+      //Redirect client
+      router.push('/login', '/');
     } catch (ex) {
-      console.error('Error signing out', ex);
+      console.error('Error signing out --Navbar', ex);
     }
   };
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-        <Link href='/'>
+        <Link href='/' as='/browse'>
           <a className={styles.logoLink}>
             <div className={styles.logoWrapper}>
               <Image

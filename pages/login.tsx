@@ -1,19 +1,21 @@
 import React, { useState, useEffect, MouseEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
-import { NextRouter, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
 
 import m from '../lib/magic-client';
 
+import useFetch from '../utils/useFetch';
+
 import styles from '../styles/Login.module.css';
 
 export default function Login() {
-  const [email, setEmail] = useState<string>('');
-  const [userMsg, setUserMsg] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const router: NextRouter = useRouter();
+  const [email, setEmail] = useState('');
+  const [userMsg, setUserMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  //
+  const router = useRouter();
 
   useEffect((): VoidFunction => {
     const handleComplete = () => setIsLoading(false);
@@ -38,22 +40,16 @@ export default function Login() {
 
     try {
       setIsLoading(true);
-
-      const didToken = await m.auth.loginWithMagicLink({
-        email,
-      });
+      // Get didToken from Magic Link
+      const didToken = await m.auth.loginWithMagicLink({ email });
 
       if (didToken) {
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${didToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        const { authenticated } = await response.json();
+        // Call login api
+        const { authenticated } = await useFetch('/api/login', didToken);
+
+        // Redirect client
         if (authenticated) {
-          router.replace('/');
+          router.push('/', '/browse');
         } else {
           setIsLoading(false);
           setUserMsg('Something went wrong loggin in');
@@ -72,7 +68,7 @@ export default function Login() {
 
       <header className={styles.header}>
         <div className={styles.headerWrapper}>
-          <Link href='/'>
+          <Link href='/' as='/browse'>
             <a className={styles.logoLink}>
               <div className={styles.logoWrapper}>
                 <Image

@@ -13,6 +13,15 @@ export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
   const { userId, token } = await getCurrentUser(ctx);
+  if (!userId) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
   const myListVideos = await getMyList(userId, token);
   return {
     props: {

@@ -18,6 +18,14 @@ export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
   const { userId, token } = await getCurrentUser(ctx);
+  if (!userId) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
 
   const disneyVideos = await getVideos('disney%20trailer');
   const travelVideos = await getVideos('travel');

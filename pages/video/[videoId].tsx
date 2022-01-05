@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
+
 import Modal from 'react-modal';
 import cls from 'classnames';
 
@@ -8,9 +10,10 @@ import Like from '../../components/icons/like-icon';
 import Dislike from '../../components/icons/dislike-icons';
 
 import { getYoutubeVideoById } from '../../lib/videos';
+import getCurrentUser from '../../utils/getCurrentUser';
 
 import styles from '../../styles/Video.module.css';
-import { GetStaticProps, GetStaticPropsContext } from 'next';
+import useFetch from '../../utils/useFetch';
 
 Modal.setAppElement('#__next');
 
@@ -58,8 +61,8 @@ const Video: React.FC<any> = ({ video }) => {
 
   useEffect((): void => {
     async function fetchStats() {
-      const res = await fetch(`/api/stats?videoId=${videoId}`);
-      const data = await res.json();
+      const data = await useFetch(`/api/stats?videoId=${videoId}`, '', 'GET');
+
       if (data.length > 0) {
         const favorited = data[0].favorited;
         switch (favorited) {
@@ -75,17 +78,8 @@ const Video: React.FC<any> = ({ video }) => {
     fetchStats();
   }, [videoId]);
 
-  const runRatingService = async (favorited): Promise<Response> => {
-    return await fetch('/api/stats', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        videoId,
-        favorited,
-      }),
-    });
+  const runRatingService = async (favorited: number): Promise<Response> => {
+    return await useFetch('/api/stats', '', 'POST', { videoId, favorited });
   };
 
   const handleToggleDislike = async (): Promise<void> => {

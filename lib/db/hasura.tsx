@@ -1,5 +1,7 @@
+import useFetch from '../../utils/useFetch';
+
 export async function insertStats(
-  token,
+  token: string,
   { favorited, userId, watched, videoId }
 ) {
   const operationsDoc = `
@@ -25,7 +27,7 @@ export async function insertStats(
 }
 
 export async function updateStats(
-  token,
+  token: string,
   { favorited, userId, watched, videoId }
 ) {
   const operationsDoc = `
@@ -54,7 +56,11 @@ mutation updateStats($favorited: Int!, $userId: String!, $watched: Boolean!, $vi
   );
 }
 
-export async function findVideoIdByUser(token, userId, videoId) {
+export async function findVideoIdByUser(
+  token: string,
+  userId: string,
+  videoId: string
+) {
   const operationsDoc = `
   query findVideoIdByUserId($userId: String!, $videoId: String!) {
     stats(where: { userId: {_eq: $userId}, videoId: {_eq: $videoId }}) {
@@ -80,7 +86,7 @@ export async function findVideoIdByUser(token, userId, videoId) {
   return response?.data?.stats;
 }
 
-export async function createNewUser(token, metadata) {
+export async function createNewUser(token: string, metadata) {
   const operationsDoc = `
   mutation createNewUser($issuer: String!, $email: String!, $publicAddress: String!) {
     insert_users(objects: {email: $email, issuer: $issuer, publicAddress: $publicAddress}) {
@@ -108,7 +114,7 @@ export async function createNewUser(token, metadata) {
   return response;
 }
 
-export async function isNewUser(token, issuer) {
+export async function isNewUser(token: string, issuer: string) {
   const operationsDoc = `
   query isNewUser($issuer: String!) {
     users(where: {issuer: {_eq: $issuer}}) {
@@ -131,21 +137,22 @@ export async function isNewUser(token, issuer) {
   return response?.data?.users?.length === 0;
 }
 
-async function queryHasuraGQL(operationsDoc, operationName, variables, token) {
-  const result = await fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-type': 'application/json',
-    },
-    body: JSON.stringify({
+async function queryHasuraGQL(
+  operationsDoc,
+  operationName: string,
+  variables,
+  token: string
+) {
+  return await useFetch(
+    process.env.NEXT_PUBLIC_HASURA_ADMIN_URL,
+    token,
+    'POST',
+    {
       query: operationsDoc,
-      variables: variables,
-      operationName: operationName,
-    }),
-  });
-
-  return await result.json();
+      variables,
+      operationName,
+    }
+  );
 }
 
 export async function getWatchedVideos(
@@ -174,7 +181,7 @@ export async function getWatchedVideos(
   return response?.data?.stats;
 }
 
-export async function getMyListVideos(userId, token) {
+export async function getMyListVideos(userId: string, token: string) {
   const operationsDoc = `
   query favoritedVideos($userId: String!) {
     stats(where: {
