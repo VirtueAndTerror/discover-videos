@@ -1,5 +1,5 @@
-import Head from 'next/head';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 
 import Navbar from '../components/nav/Navbar';
 import Banner from '../components/banner/Banner';
